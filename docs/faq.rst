@@ -263,8 +263,9 @@ Why does cpu_percent() return 0.0 on first call?
 
 :func:`cpu_percent` (and :meth:`Process.cpu_percent`) measures CPU usage
 *between two calls*. The very first call has no prior sample to compare
-against, so it always returns ``0.0``. The fix is to call it once to initialize
-the baseline, discard the result, then call it again after a short sleep:
+against, so it returns a meaningless ``0.0``. The fix is to call it once to
+initialize the baseline, discard the result, then call it again after a short
+sleep:
 
 .. code-block:: python
 
@@ -297,9 +298,9 @@ Can Process.cpu_percent() return a value higher than 100%?
 
 Yes. On a multi-core system a process can run threads on several CPUs at the
 same time. The maximum value is ``psutil.cpu_count() * 100``. For example, on a
-4-core machine a fully-loaded process can reach 400%. The system-wide
-:func:`cpu_percent` (without a :class:`Process`) always stays in the 0–100%
-range because it averages across all cores.
+machine with 4 :term:`logical CPUs <logical CPU>`, a fully-loaded process can
+reach 400%. The system-wide :func:`cpu_percent` (without a :class:`Process`)
+always stays in the 0-100% range because it averages across all cores.
 
 The returned value is explicitly *not* split evenly between all available CPUs.
 This is consistent with the ``top`` UNIX utility: a busy loop on a system with
